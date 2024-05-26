@@ -22,6 +22,7 @@ import ProgrammingWow from "./Cards/ProgrammingWow";
 import ProgrammingMom from "./Cards/ProgrammingMom";
 import { dailyGraph } from "./Daily-graph";
 import StudyHoursYesterday from "./Cards/StudyHoursYesterday";
+import BasicDatePicker from "./StudyHourInput";
 
 const drawerWidth = 240;
 
@@ -74,6 +75,7 @@ export default function PermanentDrawerLeft() {
         sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
       >
         <Toolbar />
+        <Box>{BasicDatePicker()}</Box>
         <Box display={"flex"} gap={"20px"}>
           <TotalProgrammingStudyHours />
           <MonthlyProgrammingStudyHours />
