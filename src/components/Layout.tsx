@@ -21,6 +21,7 @@ import ProgrammingDod from "./Cards/ProgrammingDod";
 import ProgrammingWow from "./Cards/ProgrammingWow";
 import ProgrammingMom from "./Cards/ProgrammingMom";
 import { dailyGraph } from "./Daily-graph";
+import StudyHoursYesterday from "./Cards/StudyHoursYesterday";
 
 const drawerWidth = 240;
 
@@ -76,6 +77,7 @@ export default function PermanentDrawerLeft() {
         <Box display={"flex"} gap={"20px"}>
           <TotalProgrammingStudyHours />
           <MonthlyProgrammingStudyHours />
+          <StudyHoursYesterday />
         </Box>
         <Box display={"flex"} gap={"20px"} paddingTop={"20px"}>
           <ProgrammingDod />
