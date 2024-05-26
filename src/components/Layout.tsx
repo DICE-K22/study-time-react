@@ -20,6 +20,7 @@ import MonthlyProgrammingStudyHours from "./Cards/MonthlyProgrammingStudyHours";
 import ProgrammingDod from "./Cards/ProgrammingDod";
 import ProgrammingWow from "./Cards/ProgrammingWow";
 import ProgrammingMom from "./Cards/ProgrammingMom";
+import { dailyGraph } from "./Daily-graph";
 
 const drawerWidth = 240;
 
@@ -81,7 +82,7 @@ export default function PermanentDrawerLeft() {
           <ProgrammingWow />
           <ProgrammingMom />
         </Box>
-        <Box></Box>
+        <Box>{dailyGraph()}</Box>
       </Box>
     </Box>
   );
