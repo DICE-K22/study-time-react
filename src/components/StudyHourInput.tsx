@@ -13,6 +13,8 @@ import { useStudyHours } from "./Contexts/StudyTimeContext";
 
 export default function BasicDatePicker() {
   const { studyHourInput, setStudyHourInput } = useStudyHours();
+  const { studyMinInput, setStudyMinInput } = useStudyHours();
+
   const [studyHours, setStudyHours] = useState<StudyHours[]>([]);
 
   type StudyHours = [date: Date, studyHour: number, id: number];
@@ -21,6 +23,12 @@ export default function BasicDatePicker() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setStudyHourInput(e.target.value);
+  };
+
+  const handleChangeMin = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setStudyMinInput(e.target.value);
   };
 
   return (
@@ -57,7 +65,15 @@ export default function BasicDatePicker() {
             }}
           />
           <Typography marginRight={"16px"}>時間</Typography>
-          <TextField id="standard-basic" label="分を入力" variant="standard" />
+          <TextField
+            id="standard-basic"
+            label="分を入力"
+            variant="standard"
+            value={studyMinInput}
+            onChange={(e) => {
+              handleChangeMin(e);
+            }}
+          />
           <Typography>分</Typography>
         </Box>
 
