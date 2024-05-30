@@ -8,8 +8,21 @@ import TextField from "@mui/material/TextField";
 import { Typography } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import { useState } from "react";
+import { useStudyHours } from "./Contexts/StudyTimeContext";
 
 export default function BasicDatePicker() {
+  const { studyHourInput, setStudyHourInput } = useStudyHours();
+  const [studyHours, setStudyHours] = useState<StudyHours[]>([]);
+
+  type StudyHours = [date: Date, studyHour: number, id: number];
+
+  const handleChangeHour = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setStudyHourInput(e.target.value);
+  };
+
   return (
     <Box
       border={"1px solid rgba(0, 0, 0, 0.12)"}
@@ -38,6 +51,10 @@ export default function BasicDatePicker() {
             id="standard-basic"
             label="時間を入力"
             variant="standard"
+            value={studyHourInput}
+            onChange={(e) => {
+              handleChangeHour(e);
+            }}
           />
           <Typography marginRight={"16px"}>時間</Typography>
           <TextField id="standard-basic" label="分を入力" variant="standard" />
