@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 import { useStudyHours } from "../Contexts/StudyTimeContext";
 
 export default function StudyHoursToday() {
-  const { studyHourInput } = useStudyHours();
+  const { studyHourInput, studyMinInput } = useStudyHours();
 
   const card = (
     <React.Fragment>
@@ -23,13 +23,13 @@ export default function StudyHoursToday() {
           paddingTop={"25px"}
         >
           <Typography variant="body1" fontSize={"70px"} lineHeight="1">
-            {studyHourInput}
+            {studyHourInput || "0"}
           </Typography>
           <Typography fontSize={"35px"} lineHeight="1" marginRight={"10px"}>
             h
           </Typography>
           <Typography variant="body1" fontSize={"70px"} lineHeight="1">
-            0
+            {studyMinInput || "0"}
           </Typography>
           <Typography fontSize={"35px"} lineHeight="1">
             min.
