@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 import { useStudyHours } from "../Contexts/StudyTimeContext";
 
 const CardTotal = () => {
-  const { totalStudyHours } = useStudyHours();
+  const { totalStudyHours, totalStudyMins } = useStudyHours();
 
   return (
     <CardContent>
@@ -28,7 +28,7 @@ const CardTotal = () => {
           h
         </Typography>
         <Typography variant="body1" fontSize={"70px"} lineHeight="1">
-          22
+          {totalStudyMins}
         </Typography>
         <Typography fontSize={"35px"} lineHeight="1">
           min.

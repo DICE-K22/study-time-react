@@ -16,6 +16,7 @@ export default function BasicDatePicker() {
   const { studyHourInput, setStudyHourInput } = useStudyHours();
   const { studyMinInput, setStudyMinInput } = useStudyHours();
   const { studyHours, setStudyHours } = useStudyHours();
+  const { studyMins, setStudyMins } = useStudyHours();
 
   type StudyHours = {
     date: Date;
@@ -55,12 +56,6 @@ export default function BasicDatePicker() {
     setStudyHours(newStudyHoursData);
     setStudyHourInput("");
     setStudyMinInput("");
-
-    const totalStudyHours = newStudyHoursData.reduce((sum, current) => {
-      return sum + parseFloat(current.studyHour);
-    }, 0);
-
-    console.log(totalStudyHours);
   };
 
   return (
