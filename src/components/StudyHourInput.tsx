@@ -12,12 +12,22 @@ import { useState } from "react";
 import { useStudyHours } from "./Contexts/StudyTimeContext";
 
 export default function BasicDatePicker() {
+  const { studyDayInput, setStudyDayInput } = useStudyHours();
   const { studyHourInput, setStudyHourInput } = useStudyHours();
   const { studyMinInput, setStudyMinInput } = useStudyHours();
+  const { studyHours, setStudyHours } = useStudyHours();
 
-  const [studyHours, setStudyHours] = useState<StudyHours[]>([]);
+  type StudyHours = {
+    date: Date;
+    studyHour: string;
+    studyMin: string;
+    id: number;
+  };
 
-  type StudyHours = [date: Date, studyHour: number, id: number];
+  const handleChangeDay = (e: { target: { value: Date } }) => {
+    setStudyDayInput(e.target.value);
+    console.log(studyDayInput);
+  };
 
   const handleChangeHour = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -31,6 +41,28 @@ export default function BasicDatePicker() {
     setStudyMinInput(e.target.value);
   };
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const newStudyHours: StudyHours = {
+      date: new Date(),
+      studyHour: studyHourInput,
+      studyMin: studyMinInput,
+      id: studyHours.length,
+    };
+
+    const newStudyHoursData = [...studyHours, newStudyHours];
+    setStudyHours(newStudyHoursData);
+    setStudyHourInput("");
+    setStudyMinInput("");
+
+    const totalStudyHours = newStudyHoursData.reduce((sum, current) => {
+      return sum + parseFloat(current.studyHour);
+    }, 0);
+
+    console.log(totalStudyHours);
+  };
+
   return (
     <Box
       border={"1px solid rgba(0, 0, 0, 0.12)"}
@@ -40,21 +72,18 @@ export default function BasicDatePicker() {
       height={"110px"}
       marginBottom={"20px"}
     >
-      <Typography fontSize={"20px"}>本日の学習時間は？</Typography>
-      <form style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+      <Typography fontSize={"20px"}>本日の学習時間は？{}</Typography>
+      <form
+        style={{ display: "flex", alignItems: "center", gap: "16px" }}
+        onSubmit={handleSubmit}
+      >
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DemoContainer components={["DatePicker"]}>
             <DatePicker label="日付" />
           </DemoContainer>
         </LocalizationProvider>
 
-        <Box
-          component="form"
-          noValidate
-          autoComplete="off"
-          display={"flex"}
-          alignItems={"flex-end"}
-        >
+        <Box display={"flex"} alignItems={"flex-end"}>
           <TextField
             id="standard-basic"
             label="時間を入力"
@@ -78,7 +107,9 @@ export default function BasicDatePicker() {
         </Box>
 
         <Stack spacing={2} direction="row">
-          <Button variant="contained">追加</Button>
+          <Button variant="contained" type="submit">
+            追加
+          </Button>
         </Stack>
       </form>
     </Box>
