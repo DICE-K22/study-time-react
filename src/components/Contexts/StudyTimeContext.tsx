@@ -60,11 +60,14 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
       (sum, current) => sum + parseFloat(current.studyHour),
       0
     );
-    const totalMins = studyHours.reduce(
+    let totalMins = studyHours.reduce(
       (sum, current) => sum + parseFloat(current.studyMin),
       0
     );
-    setTotalStudyHours(totalHours);
+
+    const additionalTime = Math.floor(totalMins / 60);
+    totalMins = totalMins % 60;
+    setTotalStudyHours(additionalTime + totalHours);
     setTotalStudyMins(totalMins);
   }, [studyHours]);
 

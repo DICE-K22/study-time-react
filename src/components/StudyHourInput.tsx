@@ -17,6 +17,8 @@ export default function BasicDatePicker() {
   const { studyMinInput, setStudyMinInput } = useStudyHours();
   const { studyHours, setStudyHours } = useStudyHours();
   const { studyMins, setStudyMins } = useStudyHours();
+  const [errorHour, setErrorHour] = useState<string | null>(null);
+  const [errorMin, setErrorMin] = useState<string | null>(null);
 
   type StudyHours = {
     date: Date;
@@ -52,10 +54,22 @@ export default function BasicDatePicker() {
       id: studyHours.length,
     };
 
+    if (!studyHourInput) {
+      setErrorHour("学習時間を入力してください");
+      return;
+    }
+
+    if (!studyMinInput) {
+      setErrorMin("学習分を入力してください");
+      return;
+    }
+
     const newStudyHoursData = [...studyHours, newStudyHours];
     setStudyHours(newStudyHoursData);
     setStudyHourInput("");
     setStudyMinInput("");
+    setErrorHour(null);
+    setErrorMin(null);
   };
 
   return (
@@ -107,6 +121,16 @@ export default function BasicDatePicker() {
           </Button>
         </Stack>
       </form>
+      {errorHour && (
+        <Typography color="error" variant="body2" padding={"10px"}>
+          {errorHour}
+        </Typography>
+      )}
+      {errorMin && (
+        <Typography color="error" variant="body2" padding={"10px"}>
+          {errorMin}
+        </Typography>
+      )}
     </Box>
   );
 }
