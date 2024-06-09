@@ -10,6 +10,7 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 import { useStudyHours } from "./Contexts/StudyTimeContext";
+import dayjs, { Dayjs } from "dayjs";
 
 export default function BasicDatePicker() {
   const { studyDayInput, setStudyDayInput } = useStudyHours();
@@ -19,6 +20,7 @@ export default function BasicDatePicker() {
   const { studyMins, setStudyMins } = useStudyHours();
   const [errorHour, setErrorHour] = useState<string | null>(null);
   const [errorMin, setErrorMin] = useState<string | null>(null);
+  const [errorDate, setErrorDate] = useState<string | null>(null);
 
   type StudyHours = {
     date: Date;
@@ -27,9 +29,8 @@ export default function BasicDatePicker() {
     id: number;
   };
 
-  const handleChangeDay = (e: { target: { value: Date } }) => {
-    setStudyDayInput(e.target.value);
-    console.log(studyDayInput);
+  const handleChangeDay = (date: Dayjs | null) => {
+    setStudyDayInput(date ? date.toDate() : null);
   };
 
   const handleChangeHour = (
@@ -47,12 +48,10 @@ export default function BasicDatePicker() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const newStudyHours: StudyHours = {
-      date: new Date(),
-      studyHour: studyHourInput,
-      studyMin: studyMinInput,
-      id: studyHours.length,
-    };
+    if (!studyDayInput) {
+      setErrorDate("日付を選択してください");
+      return;
+    }
 
     if (!studyHourInput) {
       setErrorHour("学習時間を入力してください");
@@ -64,12 +63,21 @@ export default function BasicDatePicker() {
       return;
     }
 
+    const newStudyHours: StudyHours = {
+      date: studyDayInput,
+      studyHour: studyHourInput,
+      studyMin: studyMinInput,
+      id: studyHours.length,
+    };
+
     const newStudyHoursData = [...studyHours, newStudyHours];
     setStudyHours(newStudyHoursData);
     setStudyHourInput("");
     setStudyMinInput("");
+    setStudyDayInput(null);
     setErrorHour(null);
     setErrorMin(null);
+    setErrorDate(null);
   };
 
   return (
@@ -88,7 +96,11 @@ export default function BasicDatePicker() {
       >
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DemoContainer components={["DatePicker"]}>
-            <DatePicker label="日付" />
+            <DatePicker
+              label="日付"
+              value={studyDayInput ? dayjs(studyDayInput) : null}
+              onChange={handleChangeDay}
+            />
           </DemoContainer>
         </LocalizationProvider>
 
@@ -121,6 +133,11 @@ export default function BasicDatePicker() {
           </Button>
         </Stack>
       </form>
+      {errorDate && (
+        <Typography color="error" variant="body2" padding={"10px"}>
+          {errorDate}
+        </Typography>
+      )}
       {errorHour && (
         <Typography color="error" variant="body2" padding={"10px"}>
           {errorHour}
