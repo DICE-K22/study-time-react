@@ -6,15 +6,17 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useStudyHours } from "../Contexts/StudyTimeContext";
+import dayjs from "dayjs";
 
 export default function StudyHoursToday() {
-  const { studyHourInput, studyMinInput } = useStudyHours();
-
+  const { studyHourToday, studyMinToday } = useStudyHours();
+  let today = new Date();
+  let todayDate = `${today.getMonth() + 1}月${today.getDate()}日`;
   const card = (
     <React.Fragment>
       <CardContent>
         <Typography variant="h5" component="div">
-          本日の学習時間
+          本日の学習時間 （{todayDate}）
         </Typography>
         <Box
           display={"flex"}
@@ -23,13 +25,13 @@ export default function StudyHoursToday() {
           paddingTop={"25px"}
         >
           <Typography variant="body1" fontSize={"70px"} lineHeight="1">
-            {studyHourInput || "0"}
+            {studyHourToday}
           </Typography>
           <Typography fontSize={"35px"} lineHeight="1" marginRight={"10px"}>
             h
           </Typography>
           <Typography variant="body1" fontSize={"70px"} lineHeight="1">
-            {studyMinInput || "0"}
+            {studyMinToday}
           </Typography>
           <Typography fontSize={"35px"} lineHeight="1">
             min.
