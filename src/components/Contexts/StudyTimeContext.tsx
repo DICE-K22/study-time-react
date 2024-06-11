@@ -28,6 +28,8 @@ type StudyHoursContextType = {
   totalStudyMins: number;
   studyHourToday: number;
   studyMinToday: number;
+  studyHourYesterday: number;
+  studyMinYesterday: number;
 };
 
 const StudyHoursContext = createContext<StudyHoursContextType | undefined>(
@@ -58,6 +60,8 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
   const [totalStudyMins, setTotalStudyMins] = useState(0);
   const [studyHourToday, setStudyHourToday] = useState(0);
   const [studyMinToday, setStudyMinToday] = useState(0);
+  const [studyHourYesterday, setStudyHourYesterday] = useState(0);
+  const [studyMinYesterday, setStudyMinYesterday] = useState(0);
 
   useEffect(() => {
     const totalHours = studyHours.reduce(
@@ -99,6 +103,31 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
 
     setStudyHourToday(todayHours);
     setStudyMinToday(todayMins);
+
+    const yesterdayHours = studyHours
+      .filter((entry) => {
+        const entryDate = new Date(entry.date);
+        return (
+          entryDate.getDate() === today.getDate() - 1 &&
+          entryDate.getMonth() === today.getMonth() &&
+          entryDate.getFullYear() === today.getFullYear()
+        );
+      })
+      .reduce((sum, current) => sum + parseFloat(current.studyHour), 0);
+
+    const yesterdayMins = studyHours
+      .filter((entry) => {
+        const entryDate = new Date(entry.date);
+        return (
+          entryDate.getDate() === today.getDate() - 1 &&
+          entryDate.getMonth() === today.getMonth() &&
+          entryDate.getFullYear() === today.getFullYear()
+        );
+      })
+      .reduce((sum, current) => sum + parseFloat(current.studyMin), 0);
+
+    setStudyHourYesterday(yesterdayHours);
+    setStudyMinYesterday(yesterdayMins);
   }, [studyHours]);
 
   return (
@@ -118,6 +147,8 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
         totalStudyMins,
         studyHourToday,
         studyMinToday,
+        studyHourYesterday,
+        studyMinYesterday,
       }}
     >
       {children}
