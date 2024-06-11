@@ -11,12 +11,12 @@ import dayjs from "dayjs";
 export default function StudyHoursToday() {
   const { studyHourToday, studyMinToday } = useStudyHours();
   let today = new Date();
-  let todayDate = `${today.getMonth() + 1}月${today.getDate()}日`;
+  let todayDate = `（${today.getMonth() + 1}月${today.getDate()}日）`;
   const card = (
     <React.Fragment>
       <CardContent>
         <Typography variant="h5" component="div">
-          本日の学習時間 （{todayDate}）
+          本日の学習時間 {todayDate}
         </Typography>
         <Box
           display={"flex"}

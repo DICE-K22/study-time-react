@@ -22,6 +22,11 @@ export default function BasicDatePicker() {
   const [errorMin, setErrorMin] = useState<string | null>(null);
   const [errorDate, setErrorDate] = useState<string | null>(null);
 
+  const { studyHourToday } = useStudyHours();
+  const { studyHourYesterday } = useStudyHours();
+  const [errorToday, setErrorToday] = useState<string | null>(null);
+  const [errorYesterday, setErrorYesterday] = useState<string | null>(null);
+
   type StudyHours = {
     date: Date;
     studyHour: string;
@@ -70,6 +75,35 @@ export default function BasicDatePicker() {
       id: studyHours.length,
     };
 
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    const isToday = studyDayInput.toDateString() === today.toDateString();
+    const isYesterday =
+      studyDayInput.toDateString() === yesterday.toDateString();
+
+    if (
+      (isToday && studyHourToday > 0) ||
+      (isYesterday && studyHourYesterday > 0)
+    ) {
+      if (isToday) {
+        setErrorToday(
+          `${
+            today.getMonth() + 1
+          }月${today.getDate()}日の学習時間は既に入力されています。`
+        );
+      }
+      if (isYesterday) {
+        setErrorYesterday(
+          `${today.getMonth() + 1}月${
+            today.getDate() - 1
+          }日の学習時間は既に入力されています。`
+        );
+      }
+      return;
+    }
+
     const newStudyHoursData = [...studyHours, newStudyHours];
     setStudyHours(newStudyHoursData);
     setStudyHourInput("");
@@ -78,6 +112,8 @@ export default function BasicDatePicker() {
     setErrorHour(null);
     setErrorMin(null);
     setErrorDate(null);
+    setErrorToday(null);
+    setErrorYesterday(null);
   };
 
   return (
@@ -146,6 +182,16 @@ export default function BasicDatePicker() {
       {errorMin && (
         <Typography color="error" variant="body2" padding={"10px"}>
           {errorMin}
+        </Typography>
+      )}
+      {errorToday && (
+        <Typography color="error" variant="body2" padding={"10px"}>
+          {errorToday}
+        </Typography>
+      )}
+      {errorYesterday && (
+        <Typography color="error" variant="body2" padding={"10px"}>
+          {errorYesterday}
         </Typography>
       )}
     </Box>
