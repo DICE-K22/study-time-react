@@ -32,6 +32,9 @@ type StudyHoursContextType = {
   studyMinYesterday: number;
   studyHourMonthly: number;
   studyMinMonthly: number;
+  studyHourDod: number;
+  studyMinDod: number;
+  dodPositiveNegative: string;
 };
 
 const StudyHoursContext = createContext<StudyHoursContextType | undefined>(
@@ -66,6 +69,9 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
   const [studyMinYesterday, setStudyMinYesterday] = useState(0);
   const [studyHourMonthly, setStudyHourMonthly] = useState(0);
   const [studyMinMonthly, setStudyMinMonthly] = useState(0);
+  const [studyHourDod, setStudyHourDod] = useState(0);
+  const [studyMinDod, setStudyMinDod] = useState(0);
+  const [dodPositiveNegative, setDodPositiveNegative] = useState("");
 
   useEffect(() => {
     const totalHours = studyHours.reduce(
@@ -157,6 +163,42 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
     setStudyMinYesterday(yesterdayMins);
     setStudyHourMonthly(monthlyAdditionalTime + monthlyHours);
     setStudyMinMonthly(monthlyMins);
+
+    // const positiveNegative = todayHours > yesterdayHours ? "+" : "-";
+    // const dodHour = Math.abs(todayHours - yesterdayHours);
+    // const dodMin = Math.abs(todayMins - yesterdayMins);
+    // setDodPositiveNegative(positiveNegative);
+    // setStudyHourDod(dodHour);
+    // setStudyMinDod(dodMin);
+
+    const calcTotalToday = todayHours * 60 + todayMins;
+    const calcTotalYesterday = yesterdayHours * 60 + yesterdayMins;
+
+    if (calcTotalToday > calcTotalYesterday) {
+      const calcDod = calcTotalToday - calcTotalYesterday;
+      const calcDodHour = Math.floor(calcDod / 60);
+      const calcDodMin = calcDod % 60;
+
+      setDodPositiveNegative("+");
+      setStudyHourDod(calcDodHour);
+      setStudyMinDod(calcDodMin);
+    } else if (calcTotalToday < calcTotalYesterday) {
+      const calcDod = calcTotalYesterday - calcTotalToday;
+      const calcDodHour = Math.floor(calcDod / 60);
+      const calcDodMin = calcDod % 60;
+
+      setDodPositiveNegative("-");
+      setStudyHourDod(calcDodHour);
+      setStudyMinDod(calcDodMin);
+    } else {
+      const calcDod = calcTotalToday - calcTotalYesterday;
+      const calcDodHour = Math.floor(calcDod / 60);
+      const calcDodMin = calcDod % 60;
+
+      setDodPositiveNegative("±");
+      setStudyHourDod(calcDodHour);
+      setStudyMinDod(calcDodMin);
+    }
   }, [studyHours]);
 
   return (
@@ -180,6 +222,9 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
         studyMinYesterday,
         studyHourMonthly,
         studyMinMonthly,
+        studyHourDod,
+        studyMinDod,
+        dodPositiveNegative,
       }}
     >
       {children}

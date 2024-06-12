@@ -5,40 +5,42 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-
-const card = (
-  <React.Fragment>
-    <CardContent>
-      <Typography variant="h5" component="div">
-        前日比
-      </Typography>
-      <Box
-        display={"flex"}
-        alignItems={"flex-end"}
-        justifyContent={"center"}
-        paddingTop={"25px"}
-      >
-        <Typography variant="body1" fontSize={"70px"} lineHeight="1">
-          +
-        </Typography>
-        <Typography variant="body1" fontSize={"70px"} lineHeight="1">
-          1
-        </Typography>
-        <Typography fontSize={"35px"} lineHeight="1" marginRight={"10px"}>
-          h
-        </Typography>
-        <Typography variant="body1" fontSize={"70px"} lineHeight="1">
-          45
-        </Typography>
-        <Typography fontSize={"35px"} lineHeight="1">
-          min.
-        </Typography>
-      </Box>
-    </CardContent>
-  </React.Fragment>
-);
+import { useStudyHours } from "../Contexts/StudyTimeContext";
 
 export default function MonthlyProgrammingStudyHours() {
+  const { studyHourDod, studyMinDod, dodPositiveNegative } = useStudyHours();
+  const card = (
+    <React.Fragment>
+      <CardContent>
+        <Typography variant="h5" component="div">
+          前日比
+        </Typography>
+        <Box
+          display={"flex"}
+          alignItems={"flex-end"}
+          justifyContent={"center"}
+          paddingTop={"25px"}
+        >
+          <Typography variant="body1" fontSize={"70px"} lineHeight="1">
+            {dodPositiveNegative}
+          </Typography>
+          <Typography variant="body1" fontSize={"70px"} lineHeight="1">
+            {studyHourDod}
+          </Typography>
+          <Typography fontSize={"35px"} lineHeight="1" marginRight={"10px"}>
+            h
+          </Typography>
+          <Typography variant="body1" fontSize={"70px"} lineHeight="1">
+            {studyMinDod}
+          </Typography>
+          <Typography fontSize={"35px"} lineHeight="1">
+            min.
+          </Typography>
+        </Box>
+      </CardContent>
+    </React.Fragment>
+  );
+
   return (
     <Box sx={{ minWidth: 275 }}>
       <Card variant="outlined" sx={{ width: 400 }}>
