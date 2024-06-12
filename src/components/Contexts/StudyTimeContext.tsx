@@ -34,7 +34,10 @@ type StudyHoursContextType = {
   studyMinMonthly: number;
   studyHourDod: number;
   studyMinDod: number;
+  studyHourMom: number;
+  studyMinMom: number;
   dodPositiveNegative: string;
+  momPositiveNegative: string;
 };
 
 const StudyHoursContext = createContext<StudyHoursContextType | undefined>(
@@ -71,7 +74,10 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
   const [studyMinMonthly, setStudyMinMonthly] = useState(0);
   const [studyHourDod, setStudyHourDod] = useState(0);
   const [studyMinDod, setStudyMinDod] = useState(0);
+  const [studyHourMom, setStudyHourMom] = useState(0);
+  const [studyMinMom, setStudyMinMom] = useState(0);
   const [dodPositiveNegative, setDodPositiveNegative] = useState("");
+  const [momPositiveNegative, setMomPositiveNegative] = useState("");
 
   useEffect(() => {
     const totalHours = studyHours.reduce(
@@ -164,13 +170,6 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
     setStudyHourMonthly(monthlyAdditionalTime + monthlyHours);
     setStudyMinMonthly(monthlyMins);
 
-    // const positiveNegative = todayHours > yesterdayHours ? "+" : "-";
-    // const dodHour = Math.abs(todayHours - yesterdayHours);
-    // const dodMin = Math.abs(todayMins - yesterdayMins);
-    // setDodPositiveNegative(positiveNegative);
-    // setStudyHourDod(dodHour);
-    // setStudyMinDod(dodMin);
-
     const calcTotalToday = todayHours * 60 + todayMins;
     const calcTotalYesterday = yesterdayHours * 60 + yesterdayMins;
 
@@ -199,6 +198,58 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
       setStudyHourDod(calcDodHour);
       setStudyMinDod(calcDodMin);
     }
+
+    const lastMonthlyHours = studyHours
+      .filter((entry) => {
+        const entryDate = new Date(entry.date);
+        return (
+          entryDate.getMonth() === today.getMonth() - 1 &&
+          entryDate.getFullYear() === today.getFullYear()
+        );
+      })
+      .reduce((sum, current) => sum + parseFloat(current.studyHour), 0);
+
+    let lastMonthlyMins = studyHours
+      .filter((entry) => {
+        const entryDate = new Date(entry.date);
+        return (
+          entryDate.getMonth() === today.getMonth() - 1 &&
+          entryDate.getFullYear() === today.getFullYear()
+        );
+      })
+      .reduce((sum, current) => sum + parseFloat(current.studyMin), 0);
+
+    const LastMonthlyAdditionalTime = Math.floor(lastMonthlyMins / 60);
+    lastMonthlyMins = lastMonthlyMins % 60;
+
+    const calcTotalThisMonth = monthlyHours * 60 + monthlyMins;
+    const calcTotalLastMonth = lastMonthlyHours * 60 + lastMonthlyMins;
+
+    if (calcTotalThisMonth > calcTotalLastMonth) {
+      const calcMom = calcTotalThisMonth - calcTotalLastMonth;
+      const calcMomHour = Math.floor(calcMom / 60);
+      const calcMomMin = calcMom % 60;
+
+      setMomPositiveNegative("+");
+      setStudyHourMom(calcMomHour);
+      setStudyMinMom(calcMomMin);
+    } else if (calcTotalThisMonth < calcTotalLastMonth) {
+      const calcMom = calcTotalLastMonth - calcTotalThisMonth;
+      const calcMomHour = Math.floor(calcMom / 60);
+      const calcMomMin = calcMom % 60;
+
+      setMomPositiveNegative("-");
+      setStudyHourMom(calcMomHour);
+      setStudyMinMom(calcMomMin);
+    } else {
+      const calcMom = calcTotalThisMonth - calcTotalLastMonth;
+      const calcMomHour = Math.floor(calcMom / 60);
+      const calcMomMin = calcMom % 60;
+
+      setMomPositiveNegative("±");
+      setStudyHourMom(calcMomHour);
+      setStudyMinMom(calcMomMin);
+    }
   }, [studyHours]);
 
   return (
@@ -224,7 +275,10 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
         studyMinMonthly,
         studyHourDod,
         studyMinDod,
+        studyHourMom,
+        studyMinMom,
         dodPositiveNegative,
+        momPositiveNegative,
       }}
     >
       {children}
