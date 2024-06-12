@@ -36,8 +36,11 @@ type StudyHoursContextType = {
   studyMinDod: number;
   studyHourMom: number;
   studyMinMom: number;
+  studyHourWow: number;
+  studyMinWow: number;
   dodPositiveNegative: string;
   momPositiveNegative: string;
+  wowPositiveNegative: string;
 };
 
 const StudyHoursContext = createContext<StudyHoursContextType | undefined>(
@@ -76,8 +79,11 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
   const [studyMinDod, setStudyMinDod] = useState(0);
   const [studyHourMom, setStudyHourMom] = useState(0);
   const [studyMinMom, setStudyMinMom] = useState(0);
+  const [studyHourWow, setStudyHourWow] = useState(0);
+  const [studyMinWow, setStudyMinWow] = useState(0);
   const [dodPositiveNegative, setDodPositiveNegative] = useState("");
   const [momPositiveNegative, setMomPositiveNegative] = useState("");
+  const [wowPositiveNegative, setWowPositiveNegative] = useState("");
 
   useEffect(() => {
     const totalHours = studyHours.reduce(
@@ -219,9 +225,6 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
       })
       .reduce((sum, current) => sum + parseFloat(current.studyMin), 0);
 
-    const LastMonthlyAdditionalTime = Math.floor(lastMonthlyMins / 60);
-    lastMonthlyMins = lastMonthlyMins % 60;
-
     const calcTotalThisMonth = monthlyHours * 60 + monthlyMins;
     const calcTotalLastMonth = lastMonthlyHours * 60 + lastMonthlyMins;
 
@@ -250,6 +253,78 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
       setStudyHourMom(calcMomHour);
       setStudyMinMom(calcMomMin);
     }
+
+    const startOfThisWeek = new Date(today);
+    startOfThisWeek.setDate(today.getDate() - today.getDay());
+    startOfThisWeek.setHours(0, 0, 0, 0);
+
+    const startOfLastWeek = new Date(startOfThisWeek);
+    startOfLastWeek.setDate(startOfThisWeek.getDate() - 7);
+
+    const endOfThisWeek = new Date(startOfThisWeek);
+    endOfThisWeek.setDate(startOfThisWeek.getDate() + 6);
+    endOfThisWeek.setHours(23, 59, 59, 999);
+
+    const endOfLastWeek = new Date(startOfLastWeek);
+    endOfLastWeek.setDate(startOfLastWeek.getDate() + 6);
+    endOfLastWeek.setHours(23, 59, 59, 999);
+
+    const weeklyHours = studyHours
+      .filter((entry) => {
+        const entryDate = new Date(entry.date);
+        return entryDate >= startOfThisWeek && entryDate <= endOfThisWeek;
+      })
+      .reduce((sum, current) => sum + parseFloat(current.studyHour), 0);
+
+    const weeklyMins = studyHours
+      .filter((entry) => {
+        const entryDate = new Date(entry.date);
+        return entryDate >= startOfThisWeek && entryDate <= endOfThisWeek;
+      })
+      .reduce((sum, current) => sum + parseFloat(current.studyMin), 0);
+
+    const lastWeeklyHours = studyHours
+      .filter((entry) => {
+        const entryDate = new Date(entry.date);
+        return entryDate >= startOfLastWeek && entryDate <= endOfLastWeek;
+      })
+      .reduce((sum, current) => sum + parseFloat(current.studyHour), 0);
+
+    let lastWeeklyMins = studyHours
+      .filter((entry) => {
+        const entryDate = new Date(entry.date);
+        return entryDate >= startOfLastWeek && entryDate <= endOfLastWeek;
+      })
+      .reduce((sum, current) => sum + parseFloat(current.studyMin), 0);
+
+    const calcTotalThisWeek = weeklyHours * 60 + weeklyMins;
+    const calcTotalLastWeek = lastWeeklyHours * 60 + lastWeeklyMins;
+
+    if (calcTotalThisWeek > calcTotalLastWeek) {
+      const calcWow = calcTotalThisWeek - calcTotalLastWeek;
+      const calcWowHour = Math.floor(calcWow / 60);
+      const calcMomMin = calcWow % 60;
+
+      setWowPositiveNegative("+");
+      setStudyHourWow(calcWowHour);
+      setStudyMinWow(calcMomMin);
+    } else if (calcTotalThisWeek < calcTotalLastWeek) {
+      const calcWow = calcTotalLastWeek - calcTotalThisWeek;
+      const calcWowHour = Math.floor(calcWow / 60);
+      const calcWowMin = calcWow % 60;
+
+      setWowPositiveNegative("-");
+      setStudyHourWow(calcWowHour);
+      setStudyMinWow(calcWowMin);
+    } else {
+      const calcWow = calcTotalThisWeek - calcTotalLastWeek;
+      const calcWowHour = Math.floor(calcWow / 60);
+      const calcWowMin = calcWow % 60;
+
+      setWowPositiveNegative("±");
+      setStudyHourWow(calcWowHour);
+      setStudyMinWow(calcWowMin);
+    }
   }, [studyHours]);
 
   return (
@@ -277,8 +352,11 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
         studyMinDod,
         studyHourMom,
         studyMinMom,
+        studyHourWow,
+        studyMinWow,
         dodPositiveNegative,
         momPositiveNegative,
+        wowPositiveNegative,
       }}
     >
       {children}
