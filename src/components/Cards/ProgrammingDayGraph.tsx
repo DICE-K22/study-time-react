@@ -51,5 +51,5 @@ export const data = {
 };
 
 export function ProgrammingDayGraph() {
-  return <Bar options={options} data={data} />;
+  // return <Bar options={options} data={data} />;
 }
