@@ -20,7 +20,7 @@ import MonthlyProgrammingStudyHours from "./Cards/MonthlyProgrammingStudyHours";
 import ProgrammingDod from "./Cards/ProgrammingDod";
 import ProgrammingWow from "./Cards/ProgrammingWow";
 import ProgrammingMom from "./Cards/ProgrammingMom";
-import { dailyGraph } from "./Daily-graph";
+import { DailyGraph } from "./Daily-graph";
 import StudyHoursYesterday from "./Cards/StudyHoursYesterday";
 import BasicDatePicker from "./StudyHourInput";
 import StudyHoursToday from "./Cards/StudyHoursToday";
@@ -98,7 +98,7 @@ export default function PermanentDrawerLeft() {
           <ProgrammingWow />
           <ProgrammingMom />
         </Box>
-        <Box>{dailyGraph()}</Box>
+        <Box>{DailyGraph()}</Box>
       </Box>
     </Box>
   );

@@ -41,6 +41,7 @@ type StudyHoursContextType = {
   dodPositiveNegative: string;
   momPositiveNegative: string;
   wowPositiveNegative: string;
+  calcMonthlyTotalMins: number[];
 };
 
 const StudyHoursContext = createContext<StudyHoursContextType | undefined>(
@@ -84,6 +85,9 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
   const [dodPositiveNegative, setDodPositiveNegative] = useState("");
   const [momPositiveNegative, setMomPositiveNegative] = useState("");
   const [wowPositiveNegative, setWowPositiveNegative] = useState("");
+  const [calcMonthlyTotalMins, setCalcMonthlyTotalMins] = useState<number[]>(
+    []
+  );
 
   useEffect(() => {
     const totalHours = studyHours.reduce(
@@ -167,6 +171,22 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
         );
       })
       .reduce((sum, current) => sum + parseFloat(current.studyMin), 0);
+
+    const calcMonthlyTotalMinsArray: number[] = Array(today.getDate()).fill(0);
+
+    studyHours.forEach((entry) => {
+      const entryDate = new Date(entry.date);
+      if (
+        entryDate.getMonth() === today.getMonth() &&
+        entryDate.getFullYear() === today.getFullYear()
+      ) {
+        const dayIndex = entryDate.getDate() - 1;
+        calcMonthlyTotalMinsArray[dayIndex] +=
+          parseFloat(entry.studyHour) * 60 + parseFloat(entry.studyMin);
+      }
+    });
+
+    setCalcMonthlyTotalMins(calcMonthlyTotalMinsArray);
 
     const monthlyAdditionalTime = Math.floor(monthlyMins / 60);
     monthlyMins = monthlyMins % 60;
@@ -357,6 +377,7 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
         dodPositiveNegative,
         momPositiveNegative,
         wowPositiveNegative,
+        calcMonthlyTotalMins,
       }}
     >
       {children}
