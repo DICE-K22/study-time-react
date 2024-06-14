@@ -270,7 +270,8 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
       })
       .reduce((sum, current) => sum + parseFloat(current.studyMin), 0);
 
-    const calcTotalThisMonth = monthlyHours * 60 + monthlyMins;
+    const calcTotalThisMonth =
+      (monthlyHours + monthlyAdditionalTime) * 60 + monthlyMins;
     const calcTotalLastMonth = lastMonthlyHours * 60 + lastMonthlyMins;
 
     if (calcTotalThisMonth > calcTotalLastMonth) {
