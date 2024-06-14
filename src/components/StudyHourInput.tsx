@@ -11,6 +11,8 @@ import Button from "@mui/material/Button";
 import { useState } from "react";
 import { useStudyHours } from "./Contexts/StudyTimeContext";
 import dayjs, { Dayjs } from "dayjs";
+import { db } from "../firebase";
+import { addDoc, collection } from "firebase/firestore";
 
 export default function BasicDatePicker() {
   const { studyDayInput, setStudyDayInput } = useStudyHours();
@@ -50,7 +52,7 @@ export default function BasicDatePicker() {
     setStudyMinInput(e.target.value);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!studyDayInput) {
@@ -103,6 +105,9 @@ export default function BasicDatePicker() {
       }
       return;
     }
+
+    // Firestoreへデータを追加
+    const docRef = await addDoc(collection(db, "StudyHours"), newStudyHours);
 
     const newStudyHoursData = [...studyHours, newStudyHours];
     setStudyHours(newStudyHoursData);
