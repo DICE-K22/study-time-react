@@ -5,6 +5,8 @@ import {
   useState,
   useEffect,
 } from "react";
+import { db } from "../../firebase";
+import { collection, getDocs } from "firebase/firestore";
 
 type StudyHours = {
   date: Date;
@@ -90,6 +92,25 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
   );
 
   useEffect(() => {
+    // Firestoreからデータの受け取り
+    const fecheStudyTimes = async () => {
+      const querySnapshot = await getDocs(collection(db, "StudyHours"));
+
+      const studyHoursData = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        const date = data.date?.seconds
+          ? new Date(data.date.toDate())
+          : new Date();
+        return {
+          ...data,
+          date,
+          id: doc.id,
+        } as unknown as StudyHours;
+      });
+      setStudyHours(studyHoursData);
+    };
+    fecheStudyTimes();
+
     const totalHours = studyHours.reduce(
       (sum, current) => sum + parseFloat(current.studyHour),
       0
@@ -130,6 +151,7 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
     setStudyHourToday(todayHours);
     setStudyMinToday(todayMins);
 
+    // 昨日学習時間
     const yesterdayHours = studyHours
       .filter((entry) => {
         const entryDate = new Date(entry.date);
@@ -152,6 +174,7 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
       })
       .reduce((sum, current) => sum + parseFloat(current.studyMin), 0);
 
+    // 月間プログラミング学習時間
     const monthlyHours = studyHours
       .filter((entry) => {
         const entryDate = new Date(entry.date);
@@ -196,6 +219,7 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
     setStudyHourMonthly(monthlyAdditionalTime + monthlyHours);
     setStudyMinMonthly(monthlyMins);
 
+    // 前日比
     const calcTotalToday = todayHours * 60 + todayMins;
     const calcTotalYesterday = yesterdayHours * 60 + yesterdayMins;
 
@@ -225,6 +249,7 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
       setStudyMinDod(calcDodMin);
     }
 
+    // 前月比
     const lastMonthlyHours = studyHours
       .filter((entry) => {
         const entryDate = new Date(entry.date);
@@ -274,6 +299,7 @@ export const StudyHoursProvider: React.FC<StudyHoursProviderProps> = ({
       setStudyMinMom(calcMomMin);
     }
 
+    // 前週比
     const startOfThisWeek = new Date(today);
     startOfThisWeek.setDate(today.getDate() - today.getDay());
     startOfThisWeek.setHours(0, 0, 0, 0);
