@@ -24,6 +24,7 @@ import { DailyGraph } from "./Daily-graph";
 import StudyHoursYesterday from "./Cards/StudyHoursYesterday";
 import BasicDatePicker from "./StudyHourInput";
 import StudyHoursToday from "./Cards/StudyHoursToday";
+import ButtonFunction from "./Button";
 
 const drawerWidth = 240;
 
@@ -40,10 +41,11 @@ export default function PermanentDrawerLeft() {
           ml: `${drawerWidth}px`,
         }}
       >
-        <Toolbar>
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <Typography variant="h6" noWrap component="div">
             Study Time
           </Typography>
+          <Box>{ButtonFunction()}</Box>
         </Toolbar>
       </AppBar>
       <Drawer
