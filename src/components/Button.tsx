@@ -17,7 +17,15 @@ const style = {
   p: 4,
 };
 
-export default function ButtonFunction() {
+interface ButtonFunctionProps {
+  buttonText: string;
+  modalContent: string;
+}
+
+export default function ButtonFunction({
+  buttonText,
+  modalContent,
+}: ButtonFunctionProps) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -34,7 +42,7 @@ export default function ButtonFunction() {
           width: "130px",
         }}
       >
-        Sign Up
+        {buttonText}
       </Button>
       <Modal
         open={open}
@@ -43,7 +51,11 @@ export default function ButtonFunction() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <SignUp handleClose={handleClose} />
+          {modalContent === "signup" ? (
+            <SignUp handleClose={handleClose} />
+          ) : (
+            <div>ログイン</div>
+          )}
         </Box>
       </Modal>
     </div>
