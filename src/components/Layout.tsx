@@ -45,7 +45,10 @@ export default function PermanentDrawerLeft() {
           <Typography variant="h6" noWrap component="div">
             Study Time
           </Typography>
-          <Box>{ButtonFunction()}</Box>
+          <Box sx={{ display: "flex", gap: "10px" }}>
+            <ButtonFunction buttonText="新規登録" modalContent="signup" />
+            <ButtonFunction buttonText="ログイン" modalContent="login" />
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer
