@@ -8,11 +8,11 @@ import TextField from "@mui/material/TextField";
 import { Typography } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useStudyHours } from "./Contexts/StudyTimeContext";
 import dayjs, { Dayjs } from "dayjs";
 import { db } from "../firebase";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs } from "firebase/firestore";
 
 export default function BasicDatePicker() {
   const { studyDayInput, setStudyDayInput } = useStudyHours();
@@ -35,6 +35,26 @@ export default function BasicDatePicker() {
     studyMin: string;
     id: number;
   };
+
+  useEffect(() => {
+    const fetchStudyHours = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "StudyHours"));
+        const data = querySnapshot.docs.map((doc) => {
+          return {
+            ...doc.data(),
+            date: doc.data().date.toDate(),
+            id: doc.id,
+          } as unknown as StudyHours;
+        });
+        setStudyHours(data);
+      } catch (error) {
+        console.error("Error fetching study hours: ", error);
+      }
+    };
+
+    fetchStudyHours();
+  }, [setStudyHours]);
 
   const handleChangeDay = (date: Dayjs | null) => {
     setStudyDayInput(date ? date.toDate() : null);

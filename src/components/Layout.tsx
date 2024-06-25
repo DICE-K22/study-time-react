@@ -11,8 +11,6 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import HomeIcon from "@mui/icons-material/Home";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import TotalProgrammingStudyHours from "./Cards/TotalProgrammingStudyHours ";
@@ -24,7 +22,6 @@ import { DailyGraph } from "./Daily-graph";
 import StudyHoursYesterday from "./Cards/StudyHoursYesterday";
 import BasicDatePicker from "./StudyHourInput";
 import StudyHoursToday from "./Cards/StudyHoursToday";
-import ButtonFunction from "./Button";
 
 const drawerWidth = 240;
 
@@ -45,10 +42,6 @@ export default function PermanentDrawerLeft() {
           <Typography variant="h6" noWrap component="div">
             Study Time
           </Typography>
-          <Box sx={{ display: "flex", gap: "10px" }}>
-            <ButtonFunction buttonText="新規登録" modalContent="signup" />
-            <ButtonFunction buttonText="ログイン" modalContent="login" />
-          </Box>
         </Toolbar>
       </AppBar>
       <Drawer
